@@ -6,19 +6,19 @@ pipeline {
                 checkout([
                     $class: 'GITSCM',
                     branches: [[name: "*/main"]],
-                    extensions:[],
+                    extensions: [],
                     userRemoteConfigs: [[
-                        url:'https://github.com/SafeEHA/terraform-s3.git/'
+                        url:'https://github.com/Musah-tech/S3-terraform.git'
                     ]]
                 ])
             }
         }
-        stage('Terraform Init') (
+        stage('Terraform Init') {
             steps {
                 sh 'terraform init'
             }
-        )
-        stage('Plan Terraform') (
+        }
+        stage('Plan Terraform') {
             step {
                 script {
                     def planResult = sh(script: 'terraform plan -detailed-exitcode -out=tfplan', returnStatus: true)
@@ -27,18 +27,18 @@ pipeline {
                     }
                 }
             }
-        )
+        }
         stage('Apply Terraform') {
             steps {
                 sh 'terraform apply auto-approve tfplan'
             }
         }
     }
-    post{
+    post {
         always {
             sh 'rm -t tfplan'
         }
-        sucessful {
+        sucess {
             echo 'Terraform deployment successful'
         }
         failure {
